@@ -10,32 +10,35 @@
 var ctx;
 var imageData;
 
-var pauseFlag=1;
-var lineFlag=1;
-var triangleFlag=1;
-var fillFlag=true;
+var pauseFlag=true;
+var lineFlag=true;
+var triangleFlag=true;
+var fillFlag = true;
 var fillModeFlag = true;
 
 function togglePause() {
-  pauseFlag= 1- pauseFlag;
-  console.log('pauseFlag = %d', pauseFlag);
+  pauseFlag= !pauseFlag;
+  console.log('pauseFlag = ' + pauseFlag);
 }
 
 function toggleLine() {
-  lineFlag= 1- lineFlag;
-  console.log('lineFlag = %d', lineFlag);
+  lineFlag= !lineFlag;
+  console.log('lineFlag = ' + lineFlag);
 }
 
 function toggleTriangle() {
-  triangleFlag= 1- triangleFlag;
-  console.log('triangleFlag = %d', triangleFlag);
+  triangleFlag= !triangleFlag;
+  console.log('triangleFlag = ' + triangleFlag);
 }
 
 function toggleFill() {
-  fillFlag= 1- fillFlag;
-  console.log('fillFlag = %d', fillFlag);
+  fillFlag= !fillFlag;
+  console.log('fillFlag = ' + fillFlag);
 }
-
+function togglefillMode() {
+  fillModeFlag = !fillModeFlag;
+  console.log('fillModeFlag = ' + fillModeFlag);
+}
 
 function animate() 
 {
@@ -62,9 +65,10 @@ function main()
   // load and display image
   var img = new Image();
 
-  img.crossOrigin="Anonymous"
+  img.crossOrigin="Anonymous";
   //img.src = 'data/frac2.png';
   img.src = 'https://raw.githubusercontent.com/cs411iit/public/master/frac2.png';
+  
   img.onload = function() { initImage(this);}
 
   // set button listeners
@@ -82,6 +86,9 @@ function main()
 
   var fillbtn = document.getElementById('fillButton');
   fillbtn.addEventListener('click', toggleFill);
+
+  var fillmbtn = document.getElementById('fillModeButton');
+  fillmbtn.addEventListener('click', togglefillMode);
 
   // start animation
   animate();
@@ -117,52 +124,11 @@ function grayscale()
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 // REPLACE THIS WITH YOUR FUNCTION FOLLOWING THE ASSIGNMENT SPECIFICATIONS
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-/*/ Original
-function drawLineSegment(vs,ve,color)
-{
+
+function fillPixel(x, y, color) {
   var data = imageData.data;
   var h = imageData.height;
   var w = imageData.width;
-
-  var dx = ve[0] -vs[0]; 
-  var dy = ve[1] -vs[1]; 
-  var m = dy/dx;             // slope 
-  var b = vs[1]-m*vs[0];     // y-intercept
-
-  // ignore invalid lines
-  if ((vs[0] <0) || (vs[1] <0) || (ve[0] >= w) || (ve[1] >= h)) return;
-  if ((vs[0] == ve[0]) && (vs[1] == ve[1])) return;
-
-  // handle nearly horizontal lines
-  if(Math.abs(m)<1){
-    for (var x = Math.min(vs[0],ve[0]); x <= Math.max(vs[0],ve[0]); x++) {
-      var y=Math.round(m*x+b); // compute y coordinate
-      var yi=h-y;//invert y coordinate
-      data[(yi*w+x)*4+0]     = color[0]; // red
-      data[(yi*w+x)*4+1]     = color[1]; // green
-      data[(yi*w+x)*4+2]     = color[2]; // blue
-    }    
-  }
-
-  // handle nearly vertical lines
-  else {
-    for (var y = Math.min(vs[1],ve[1]); y <= Math.max(vs[1],ve[1]); y++) {
-      var x=Math.round((y-b)/m); // compute y coordinate
-      var yi=h-y;//invert y coordinate
-      data[(yi*w+x)*4+0]     = color[0]; // red
-      data[(yi*w+x)*4+1]     = color[1]; // green
-      data[(yi*w+x)*4+2]     = color[2]; // blue
-    }    
-  }
-
-  // update image
-  ctx.putImageData(imageData, 0, 0);
-}
-/*/
-function fillPixel(x, y, color) {
-  var data = imageData.data;
-  var h = imageData.data;
-  var w = imageData.data;
 
   var inv = h - y;
   data[(inv * w + x) * 4 + 0] = color[0]; //r
@@ -170,16 +136,18 @@ function fillPixel(x, y, color) {
   data[(inv * w + x) * 4 + 2] = color[2]; //b
 
 }
+
 function sign(a , b) {
   if (a-b === 0) return 0;
   else if (a-b > 0) return +1;
   else return -1;
 }
+
 function drawLineSegment(vs, ve, color)
 {
   
-  var h = imageData.data;
-  var w = imageData.data;
+  var h = imageData.height;
+  var w = imageData.width;
 
     // ignore invalid lines
   if ((vs[0] <0) || (vs[1] <0) || (ve[0] >= w) || (ve[1] >= h)) return;
@@ -284,9 +252,9 @@ function drawTriangleLine(y, m1, m2, b1, b2, color) {
   var point2 = [Math.round((y - b2)/m2), y];
 
   if (fillModeFlag) {
-    var r = Math.floor(Math.random() *255);
+    var r = Math.floor(Math.random() * 255);
     var g = Math.floor(Math.random() * 255);
-    var b = Math.floor(MAth.random() * 255);
+    var b = Math.floor(Math.random() * 255);
     color = [r , g , b];
   }
 
@@ -294,8 +262,8 @@ function drawTriangleLine(y, m1, m2, b1, b2, color) {
 }
 
 function bottomFlatTriangle(v1, v2, v3, color) {
-    var m1 = (v2[0] - v1[0])/(v2[1] - v1[1]);
-    var m2 = (v3[0] - v1[0])/(v3[1] - v1[1]);
+    var m1 = (v2[1] - v1[1]) / (v2[0] - v1[0]);
+    var m2 = (v3[1] - v1[1]) / (v3[0] - v1[0]);
     var b1 = (v1[1] - m1 * v1[0]);
     var b2 = (v3[1] - m2 * v3[0]);
 
@@ -304,8 +272,8 @@ function bottomFlatTriangle(v1, v2, v3, color) {
 }
 
 function topFlatTriangle(v1, v2, v3, color) {
-  var m1 = (v2[0] - v1[0])/(v2[1] - v1[1]);
-  var m2 = (v3[0] - v1[0])/(v3[1] - v1[1]);
+  var m1 = (v2[1] - v1[1]) / (v2[0] - v1[0]);
+  var m2 = (v3[1] - v1[1]) / (v3[0] - v1[0]);
   var b1 = (v1[1] - m1 * v1[0]);
   var b2 = (v3[1] - m2 * v3[0]);
 
@@ -373,6 +341,4 @@ function drawRandomTriangle()
 
 
 
-//
-// EOF
-//
+
