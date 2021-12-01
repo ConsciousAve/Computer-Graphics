@@ -222,16 +222,14 @@ function Phonge() {
     model.arrays.normals[i] = 0;
   
   for (var i = 0; i < model.arrays.indices.length / 3; i++) {
-    var x = [];
-    var y = [];
-    var z = [];
+    var x = [], y = [], z = [];
 
     for (var j = 0; j < 3; j++)
       for  (var k = 0; k < 3; k++){
         var location = model.arrays.vertices[3 * model.arrays.indices[3 * i + j] + k];
-        if (j == 0)
+        if (j === 0)
           x.push(location);
-        else if (j == 1)
+        else if (j === 1)
           y.push(location);
         else 
           z.push(location);
@@ -285,7 +283,7 @@ function Normalize() {
 
   mvMatrix.scale(80/Scale,80/Scale,80/Scale);
 
-  if (CenterMass.p != 0 || CenterMass.q != 0 || CenterMass.r != 0 ) {
+  if (CenterMass.p !== 0 || CenterMass.q !== 0 || CenterMass.r !== 0 ) {
     mvMatrix.translate(-CenterMass.p, -CenterMass.q, -CenterMass.r);
     CenterMass = { p: 0, q: 0, z: 0};
   }
@@ -339,7 +337,7 @@ function drawScene(gl, program, angle, buffers, model)
       Normalize();
       Phonge();
 
-      var A, B, C = {num: null, bool: false};
+      var A, B, C = {value: null, set: false};
       
 
       for (var i = 0; i < model.arrays.vertices.length / 3; i += 3) {
