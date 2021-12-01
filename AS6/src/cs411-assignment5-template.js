@@ -366,16 +366,16 @@ function drawScene(gl, program, angle, buffers, model)
         B[1] -= CenterMass.q;
         B[2] -= CenterMass.r;
 
-        C.num = A[0] * B[0] + A[1] * B[1] + A[2] * B[2];
-        if (C.num < 0 && !C.bool)
-          C.bool = true;
+        C.value = A[0] * B[0] + A[1] * B[1] + A[2] * B[2];
+        if (C.value < 0 && !C.set)
+          C.set = true;
 
         for (var j = 0; j < 3; j++) 
           for (var k = 0; k < 3; k++)
             model.arrays.normals[(i + j) * 3 + k] = A[k];
       }
 
-      if (C.bool) {
+      if (C.set) {
         for (var i = 0; i < model.arrays.vertices.length; i++)
           for(var j = 0; j < 3; j++)
               model.arrays.normals[i * 3 + j] *= -1;
