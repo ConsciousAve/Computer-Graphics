@@ -273,7 +273,9 @@ function Normalize() {
     if (location.z > BBox.zmax) BBox.zmax = location.z;
   }
 
-  CenterMass.p, CenterMass.q, CenterMass.r /= (model.arrays.vertices.length / 3); 
+  CenterMass.p /= (model.arrays.vertices.length / 3);
+  CenterMass.q /= (model.arrays.vertices.length / 3);
+  CenterMass.r /= (model.arrays.vertices.length / 3);
 
   var Scale = Math.max( 
     BBox.xmax - BBox.xmin,
